@@ -101,6 +101,14 @@ return [
 
     'sendmail' => '/usr/sbin/sendmail -bs',
 
+    'stream' => [
+        'ssl' => [
+            'allow_self_signed' => env('MAIL_SSLOPTIONS_ALLOW_SELF_SIGNED', false),
+            'verify_peer' => env('MAIL_SSLOPTIONS_VERIFY_PEER', true),
+            'verify_peer_name' => env('MAIL_SSLOPTIONS_VERIFY_PEER_NAME', true),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings
@@ -126,6 +134,7 @@ return [
         "username" => env('MAIL_FETCH_USERNAME','hi'),
         "password" => env('MAIL_FETCH_PASSWORD'),
         "replyAboveLine" => "##- Please type your reply above this line -##",
+        "options" => env('MAIL_FETCH_OPTIONS','/pop3'),
     ]
 
 ];

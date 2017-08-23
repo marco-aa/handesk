@@ -21,7 +21,7 @@ class CreateTicketsFromNewEmails implements ShouldQueue
     public $newTickets  = 0;
 
     public function handle(Mailbox $pop3) {
-        $pop3->login( config('mail.fetch.host'), config('mail.fetch.port'), config('mail.fetch.username'), config('mail.fetch.password') );
+        $pop3->login( config('mail.fetch.host'), config('mail.fetch.port'), config('mail.fetch.username'), config('mail.fetch.password') ,"INBOX",false,config('mail.fetch.options') );
         $pop3->getMessages()->each(function($message) use($pop3){
             $this->processMessage($message);
             $pop3->delete($message->id);
@@ -31,7 +31,7 @@ class CreateTicketsFromNewEmails implements ShouldQueue
 
     private function processMessage($message){
         if( $this->addCommentFromMessage( $message ) ) return;
-        $ticket = Ticket::createAndNotify(["name" => $message->fromName, "email" => $message->fromAddress], $message->subject, $message->textPlain, ["email"]);
+        $ticket = Ticket::createAndNotify(["name" => $message->fromName, "email" => $message->fromAddress], $message->subject, $message->body(), ["email"]);
         Attachment::storeAttachmentsFromEmail($message, $ticket);
         $this->newTickets = $this->newTickets + 1;
     }
@@ -41,7 +41,7 @@ class CreateTicketsFromNewEmails implements ShouldQueue
         $ticket         = $messageParser->checkIfItIsACommentAndGetTheTicket();
         if( ! $ticket ) return false;
         $comment = $ticket->addComment( $messageParser->getUser( $ticket ),
-                             $messageParser->getCommentBody() );
+                                        $messageParser->getCommentBody() );
         Attachment::storeAttachmentsFromEmail($message, $comment);
         $this->newComments = $this->newComments + 1;
         return true;
