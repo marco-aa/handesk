@@ -2,9 +2,10 @@
 
 return [
     "lead"                  => "Lead|Leads",
-    "status"                => "Status",
-    "all"                   => "All",
-    "mine"                  => "Mine",
+    "newLead"               => "New Lead",
+    "status"                => "Status|Status",
+    "all"                   => "All|All",
+    "mine"                  => "Mine|Mine",
     "company"               => "Company",
     "address"               => "Address",
     "postalCode"            => "Postal code",
@@ -25,4 +26,5 @@ return [
     "complete"              => "Complete",
     "todayTasks"            => "Today tasks",
     "todayTasksDesc"        => "There are the task you have for today:",
+    "search"                => "Search",
 ];

@@ -18,6 +18,7 @@ class LeadAssigned extends Notification
     }
 
     public function via($notifiable) {
+        if( isset($notifiable->settings) && $notifiable->settings->lead_assigned_notification == false ) return [];
         //return ( method_exists($notifiable, 'routeNotificationForSlack' ) && $notifiable->routeNotificationForSlack() != null) ? ['slack'] : ['mail'];
         return ['mail'];
     }
@@ -32,9 +33,10 @@ class LeadAssigned extends Notification
     {
         return (new MailMessage)
                     ->replyTo(config('mail.fetch.username'))
-                    ->line('A lead has been assigned to you')
-                    ->action('See Lead', route('leads.show', $this->lead))
-                    ->line('Thank you for using our application!');
+                    ->view('emails.lead', [
+                        "title" => __('notification.leadAssigned'),
+                        "lead" => $this->lead
+                    ]);
     }
 
 

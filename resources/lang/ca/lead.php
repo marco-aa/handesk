@@ -2,9 +2,10 @@
 
 return [
     "lead"                  => "Lead|Leads",
-    "status"                => "Estat",
-    "all"                   => "Tot",
-    "mine"                  => "Meu",
+    "newLead"               => "Nou Lead",
+    "status"                => "Estat|Estats",
+    "all"                   => "Tot|Tots",
+    "mine"                  => "Meu|Meus",
     "company"               => "Negoci",
     "address"               => "Adreça",
     "postalCode"            => "Codi postal",

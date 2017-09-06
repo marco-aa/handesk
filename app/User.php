@@ -11,9 +11,10 @@ class User extends Authenticatable {
 
     use Notifiable;
 
-    protected $fillable = [
+    protected $guarded = ['admin','assistant'];
+    /*protected $fillable = [
         'name', 'email', 'locale', 'password',
-    ];
+    ];*/
 
     protected $hidden = [
         'password', 'remember_token',
@@ -21,6 +22,10 @@ class User extends Authenticatable {
 
     public function scopeAdmin($query){
         return $query->whereAdmin(true);
+    }
+
+    public function scopeAssistant($query){
+        return $query->where('assistant',true);
     }
 
     public function tickets(){
@@ -56,12 +61,20 @@ class User extends Authenticatable {
         return $this->hasMany(Task::class);
     }
 
+    public function uncompletedTasks(){
+        return $this->hasMany(Task::class)->where('completed',false);
+    }
+
     public function todayTasks(){
         return $this->hasMany(Task::class)->where('completed',false)->where('datetime','<', Carbon::tomorrow());
     }
 
     public static function notifyAdmins( $notification ){
         Notification::send( User::admin()->get() , $notification);
+    }
+
+    public static function notifyAssistants( $notification ){
+        Notification::send( User::assistant()->get() , $notification);
     }
 
     public function __get($attribute){
