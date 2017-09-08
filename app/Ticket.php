@@ -114,7 +114,7 @@ class Ticket extends BaseModel{
 
     public function addNote($user, $body){
         if( ! $body ) return;
-        if( ! $this->user && $user) { $this->user()->associate($user)->save(); }
+        //if( ! $this->user && $user) { $this->user()->associate($user)->save(); }  //We don't want the notes to automatically assign the user
         else                        { $this->touch(); }
         $comment = $this->comments()->create([
             "body"          => $body,
@@ -133,7 +133,7 @@ class Ticket extends BaseModel{
         collect($tickets)->map(function($ticket) {
             return is_numeric($ticket) ? Ticket::find($ticket) : $ticket;
         })->reject(function($ticket) {
-            return $ticket->status > Ticket::STATUS_SOLVED;
+            return $ticket->id == $this->id || $ticket->status > Ticket::STATUS_SOLVED;
         })->each(function($ticket) use($user) {
             $ticket->addNote( $user, "Merged with #{$this->id}" );
             $ticket->updateStatus(Ticket::STATUS_MERGED);

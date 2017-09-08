@@ -7,6 +7,7 @@ use App\Notifications\LeadAssigned;
 use App\Team;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithExceptionHandling;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -15,9 +16,11 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class LeadsBackTest extends TestCase
 {
     use DatabaseMigrations;
+    use InteractsWithExceptionHandling;
 
     /** @test */
     public function admin_can_see_all_leads(){
+        $this->withoutExceptionHandling();
         $user = factory(User::class)->states('admin')->create();
         factory(Lead::class)->create(["email" => "anEmail@email.com"]);
 
@@ -50,11 +53,21 @@ class LeadsBackTest extends TestCase
     /** @test */
     public function can_see_a_leads_detail(){
         $user   = factory(User::class)->create();
-        $lead   = factory(Lead::class)->create(["email" => "another@email.com"]);
+        $lead   = factory(Lead::class)->create(["email" => "another@email.com", "user_id" => $user->id]);
 
         $response = $this->actingAs($user)->get("leads/{$lead->id}");
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /** @test */
+    public function can_not_see_a_lead_that_is_not_mine(){
+        $user   = factory(User::class)->create();
+        $lead   = factory(Lead::class)->create(["email" => "another@email.com"]);
+
+        $response = $this->actingAs($user)->get("leads/{$lead->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /** @test */
@@ -67,7 +80,7 @@ class LeadsBackTest extends TestCase
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertCount(1, $lead->fresh()->statusUpdates );
         $this->assertEquals( $lead->fresh()->status,     Lead::STATUS_FIRST_CONTACT);
-        $this->assertEquals( $lead->fresh()->updated_at, Carbon::now() );
+        $this->assertEquals( $lead->fresh()->updated_at->toDateString(), Carbon::now()->toDateString() );
         tap( $lead->fresh()->statusUpdates->first() , function($statusUpdate) use($user){
             $this->assertEquals(  Lead::STATUS_FIRST_CONTACT, $statusUpdate->new_status);
             $this->assertEquals( "I've visited them", $statusUpdate->body);

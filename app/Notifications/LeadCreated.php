@@ -24,6 +24,7 @@ class LeadCreated extends Notification
      * @return array
      */
     public function via($notifiable) {
+        if( isset($notifiable->settings) && $notifiable->settings->new_lead_notification == false ) return [];
         return ( method_exists($notifiable, 'routeNotificationForSlack' ) && $notifiable->routeNotificationForSlack() != null) ? ['slack'] : ['mail'];
     }
 
@@ -37,9 +38,10 @@ class LeadCreated extends Notification
     {
         return (new MailMessage)
                     ->replyTo(config('mail.fetch.username'))
-                    ->line('A new lead has been created')
-                    ->action('See lead', route("leads.show", $this->lead))
-                    ->line('Thank you for using our application!');
+                    ->view('emails.lead', [
+                        "title" => __("notification.newLeadCreatedDesc"),
+                        "lead" => $this->lead
+                    ]);
     }
 
     /**

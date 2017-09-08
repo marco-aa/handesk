@@ -2,12 +2,13 @@
 
 return [
     "lead"                  => "Lead|Leads",
+    "newLead"               => "Nuevo Lead",
     "status"                => "Estado|Estados",
     "all"                   => "Todo|Todos",
     "mine"                  => "Mío|Míos",
     "company"               => "Negocio",
     "address"               => "Dirección",
-    "postalCode"            => "Codigo postal",
+    "postalCode"            => "Código postal",
     "username"              => "Username",
     "name"                  => "Nombre",
     "phone"                 => "Teléfono",

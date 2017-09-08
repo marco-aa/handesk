@@ -25,6 +25,7 @@ class TicketEscalated extends Notification
      * @return array
      */
     public function via($notifiable) {
+        if( isset($notifiable->settings) && $notifiable->settings->ticket_assigned_notification == false ) return [];
         return ( method_exists($notifiable, 'routeNotificationForSlack' ) && $notifiable->routeNotificationForSlack() != null) ? ['slack'] : ['mail'];
     }
 
@@ -37,10 +38,10 @@ class TicketEscalated extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject("Ticket escalated: #" .$this->ticket->id . ": ". $this->ticket->title)
+            ->subject(__('notification.ticketEscalated') . ": #{$this->ticket->id}: {$this->ticket->title}")
             ->replyTo(config('mail.fetch.username'))
             ->view( "emails.ticket" ,[
-                    "title"  => "Ticket escalated",
+                    "title"  => __("notification.ticketEscalated"),
                     "ticket" => $this->ticket,
                     "url"    => route("tickets.show", $this->ticket),
                 ]
@@ -54,7 +55,7 @@ class TicketEscalated extends Notification
     public function toSlack($notifiable)
     {
         return (new BaseTicketSlackMessage($this->ticket, $notifiable))
-                ->content('Ticket Escalated');
+                ->content(__('notification.ticketEscalated'));
     }
     /**
      * Get the array representation of the notification.

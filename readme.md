@@ -4,6 +4,8 @@
 Handesk has been created by our need (At Revo Systems www.revo.works) to have a powerful yet simple Ticketing system, we needed a system that allowed us to
 have multiple teams, with multiple users, easy and efficient reporting by all/team/user as well as lead management.
 
+[Landing page: http://handesk.io](http://handesk.io)
+
 Check out the screenshots to see how nice it looks, and feel fee to contribute by sending us PRs.
 We will keep adding features as we need them, but our basic workflow is totally covered :D
 
@@ -20,16 +22,18 @@ We will keep adding features as we need them, but our basic workflow is totally 
 · Tickets can be escalated, so assistants can comment on them to help the teams   
 · Can merge tickets       
 · Lead tasks, that can have a due date, and sending daily tasks email   
-· Create issues to your code repository directly from the ticket
+· Create issues to your code repository directly from the ticket   
 · UI multi language support (default en, alternativ ca, de, fr, es)
+
+> Follow us on twitter @codepassion to stay tuned
 
 ## Installation
 Its very simple, you just need to follow the standard Laravel installation
 ```
 git clone https://github.com/BadChoice/handesk.git
 composer install
-php artisan key:generate
 # Setup your .env file to match you desired database
+php artisan key:generate
 php artisan migrate --seed
 mkdir storage/app/mail_attachments
 mkdir storage/app/public/attachments
@@ -86,4 +90,5 @@ There is the `badchoice/handesk-php` package in packagist to easily talk with th
 We try to follow a TDD approach as well as some mixed functional CSS for the frontend.
    
 PRs are welcome!
+ 
 
