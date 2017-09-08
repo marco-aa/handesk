@@ -7,17 +7,20 @@ use App\Notifications\LeadAssigned;
 use App\Team;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithExceptionHandling;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LeadsBackTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
+    use InteractsWithExceptionHandling;
 
     /** @test */
     public function admin_can_see_all_leads(){
+        $this->withoutExceptionHandling();
         $user = factory(User::class)->states('admin')->create();
         factory(Lead::class)->create(["email" => "anEmail@email.com"]);
 
@@ -77,7 +80,7 @@ class LeadsBackTest extends TestCase
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertCount(1, $lead->fresh()->statusUpdates );
         $this->assertEquals( $lead->fresh()->status,     Lead::STATUS_FIRST_CONTACT);
-        $this->assertEquals( $lead->fresh()->updated_at, Carbon::now() );
+        $this->assertEquals( $lead->fresh()->updated_at->toDateString(), Carbon::now()->toDateString() );
         tap( $lead->fresh()->statusUpdates->first() , function($statusUpdate) use($user){
             $this->assertEquals(  Lead::STATUS_FIRST_CONTACT, $statusUpdate->new_status);
             $this->assertEquals( "I've visited them", $statusUpdate->body);

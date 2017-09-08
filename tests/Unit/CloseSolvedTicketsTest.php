@@ -6,11 +6,11 @@ use App\Jobs\CloseSolvedTickets;
 use App\Ticket;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CloseSolvedTicketsTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     /** @test */
     public function a_ticket_solved_before_threshold_is_closed(){
@@ -32,10 +32,5 @@ class CloseSolvedTicketsTest extends TestCase
         $this->assertEquals(Ticket::STATUS_SOLVED,  $ticket1->fresh()->status);
         $this->assertEquals(Ticket::STATUS_CLOSED,  $ticket2->fresh()->status);
         $this->assertEquals(Ticket::STATUS_NEW,     $ticket3->fresh()->status);
-    }
-
-    /** @test */
-    public function a_ticket_solved_after_treshold_is_not_closed(){
-
     }
 }
