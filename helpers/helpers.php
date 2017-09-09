@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 function createSelectArray($array, $withNull = false){
     if( ! $array) return [];
     $values = $array->pluck("name", "id")->toArray();
@@ -23,4 +25,16 @@ function gravatar($email, $size = 30){
     $defaultImage = urlencode("https://raw.githubusercontent.com/BadChoice/handesk/master/public/images/default-avatar.png");
     $gravatarURL = "https://www.gravatar.com/avatar/" . $email."?s=".$size."&default={$defaultImage}";
     return '<img id = '.$email.''.$size.' class="gravatar" src="'.$gravatarURL.'" width="'.$size.'">';
+}
+
+function toTime($minutes){
+    $minutes_per_day = (Carbon::HOURS_PER_DAY * Carbon::MINUTES_PER_HOUR);
+    $days            = floor ($minutes / ($minutes_per_day));
+    $hours           = floor (($minutes - $days * ($minutes_per_day)) / Carbon::MINUTES_PER_HOUR);
+    $mins            = (int) ($minutes - ($days * ($minutes_per_day)) - ($hours * 60));
+    return "{$days} Days {$hours} Hours {$mins} Mins";
+}
+
+function toPercentage($value, $inverse = false){
+    return  ($inverse ? 1 - $value : $value)* 100 ;
 }
